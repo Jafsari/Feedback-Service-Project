@@ -8,4 +8,15 @@ module.exports = (app) => {
   );
 
   app.get('/auth/google/callback',passport.authenticate('google'))
-}
+
+  app.get('/api/current_user',(req,res) => {
+    res.send(req.user)
+
+  });
+
+  app.get('/signout',(req,res) => {
+    req.logout();
+    res.send(req.user) // If its a clear screen, we're good!
+  })
+};
+
