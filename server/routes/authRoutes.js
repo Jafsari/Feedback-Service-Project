@@ -19,9 +19,9 @@ module.exports = (app) => {
 
   });
 
-  app.get('/signout',(req,res) => {
+  app.get('/api/logout',(req,res) => {
     req.logout();
-    res.send(req.user) // If its a clear screen, we're good!
+    res.redirect('/')
   })
 };
 
