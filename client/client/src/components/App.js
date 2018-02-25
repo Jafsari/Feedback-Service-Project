@@ -3,11 +3,12 @@ import { BrowserRouter, Route} from 'react-router-dom'
 import Header from './Header'
 import Landing from './landing'
 import Dashboard from './Dashboard'
+import SurveyNew from './surveys/surveyNew'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
 
 
-const SurveyNew = () => <h2> Survey </h2>
+
 
 
 
