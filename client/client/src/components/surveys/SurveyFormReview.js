@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions'
+import { withRouter } from 'react-router-dom'
 // Need to DRY this code
-const surveyFormReview = ({ onCancel,formValues,submitSurvey }) => {
+const surveyFormReview = ({ onCancel,formValues,submitSurvey, history }) => {
   
   
   return (
@@ -36,7 +37,7 @@ const surveyFormReview = ({ onCancel,formValues,submitSurvey }) => {
           </button>
 
           <button 
-          onClick = {() => submitSurvey(formValues)}
+          onClick = {() => submitSurvey(formValues,history)}
           className ="blue btn-flat right white-text">
           Send Survey
           <i className = "material-icons right email"> email </i>
@@ -45,8 +46,8 @@ const surveyFormReview = ({ onCancel,formValues,submitSurvey }) => {
     )
 }
 
-function mapStateToProps(state){
- return {formValues: state.form.surveyForm.values}
+function mapStateToProps({ form }){
+ return {formValues: form.surveyForm.values}
 }
 
-export default connect(mapStateToProps,actions)(surveyFormReview)
+export default connect(mapStateToProps,actions)(withRouter(surveyFormReview))
