@@ -1,7 +1,7 @@
 //Survey Field contains logic to render single a single
 // label and text input
 import React from 'react';
-//if touch is true, then render error 
+//if touch is true and error is true, then render error 
 const SurveyField = ({ input, label, meta: { error, touched } }) => {
   return (
       <div>

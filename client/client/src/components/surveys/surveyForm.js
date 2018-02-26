@@ -40,13 +40,12 @@ function validate(values) {
       }
   });
 
-  errors.Emails = validateEmails(values.Emails || '')
+  errors.recipients = validateEmails(values.recipients || '')
 
   return errors;
 }
 
 export default reduxForm({
   validate,
-  form: 'surveyForm',
-  destroyonUnmount: false // keep all of my user's inputs even if the component unmounts
+  form: 'surveyForm'
 })(SurveyForm)
