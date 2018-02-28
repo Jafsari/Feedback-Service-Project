@@ -9,21 +9,46 @@ const Mailer = require('../services/mailer');
 const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 
 module.exports = (app) => {
-  app.get('/api/surveys/thanks',(req,res) => {
+  app.get('/api/surveys/:surveyId/:choice',(req,res) => {
     res.send('Thanks for voting!!!!')
   })
 
   app.post('/api/surveys/webhooks',(req,res) => {
-    const events = _.map(req.body,({ email, url }) => {
-        const pathname =new URL(url).pathname
-        const p = new Path('/api/surveys/:surveyId/:choice')
-        const match = p.test(pathname)
+    const p = new Path('/api/surveys/:surveyId/:choice');
+
+    _.chain(req.body)
+      .map(({ email, url }) => {
+        const match = p.test(new URL(url).pathname);
         if (match) {
-          return {email, surveyId:match.surveyId,choice:match.choice}
+          return { email, surveyId: match.surveyId, choice: match.choice };
         }
-    })
-    console.log(events)
-  })
+      })
+      .compact()
+      .uniqBy('email', 'surveyId')
+
+    .each(({ surveyId, email, choice }) => {
+        //Update the specific survey document inside of the survey collection
+        Survey.updateOne( // look inside of mongo
+          {
+            _id: surveyId,
+            recipients: {
+              $elemMatch: { email: email, responded: false } // find the survey with
+              // matching surveyId, and matching sub document recipients.
+
+            }
+          }, // After the specific survey is down, lets do specific things down below
+          {
+            $inc: { [choice]: 1 }, // Increment the choice by 1
+            $set: { 'recipients.$.responded': true }, // Change the response
+            // for the specific recipient to be true
+            lastResponded: new Date() // timestamp it
+          }
+        ).exec(); //excecute the query
+      })
+      .value();
+
+    res.send({});
+  });
 
    app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
     const { title, subject, body, recipients } = req.body;
