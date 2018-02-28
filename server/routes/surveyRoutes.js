@@ -9,9 +9,17 @@ const Mailer = require('../services/mailer');
 const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 
 module.exports = (app) => {
+  
+  app.get('/api/surveys',requireLogin, async (req,res) => { // when the user pings this route,
+    // send them back their list of surveys for that user
+      const surveys =  await Survey.find({ _user:req.user.id})
+      res.send(surveys)
+  });
+
+
   app.get('/api/surveys/:surveyId/:choice',(req,res) => {
     res.send('Thanks for voting!!!!')
-  })
+  });
 
   app.post('/api/surveys/webhooks',(req,res) => {
     const p = new Path('/api/surveys/:surveyId/:choice');
